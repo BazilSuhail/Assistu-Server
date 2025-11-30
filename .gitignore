@@ -1,0 +1,21 @@
+# 1. Virtual Environment (located in root)
+venv/
+all-MiniLM-L6-v2/   
+# 2. Nested Model Folder (relative path from root)
+/assistu_project/all-MiniLM-L6-v2/
+
+# Common Python/Django exclusions
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$default.py
+
+# setuptools/distutils 
+dist/
+build/
+
+# IDE/Editor files (VS Code)
+.vscode/
+
+# Environment files
+*.env
