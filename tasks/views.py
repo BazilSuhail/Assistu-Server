@@ -65,6 +65,7 @@ def user_tasks_view(request):
         "title": t.title,
         "subject": t.subject,
         "status": t.status,
+        "priority": t.priority,
         "due_date": t.due_date
     } for t in tasks]})
 
@@ -96,8 +97,6 @@ def task_detail_view(request, task_id):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def dashboard(request):
-    print("ahhaahah")
-
     user = request.user
     print(user)
     now = datetime.now()
