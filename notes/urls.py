@@ -8,6 +8,6 @@ urlpatterns = [
     path('search-notes/', views.search_notes, name='search_notes'),
 
     path('<str:note_id>/', views.get_note_by_id, name='get_note_by_id'),
-    path('<str:note_id>/delete/', views.delete_note, name='delete_note'),
+    path('delete/<str:note_id>', views.delete_note, name='delete_note'),
     # New search endpoint
 ]

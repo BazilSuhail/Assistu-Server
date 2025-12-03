@@ -57,24 +57,9 @@ def event_detail(request, event_id):
         "related_task": str(e.related_task.id) if e.related_task else None
     })
 
-
-# @api_view(["PUT"])
-# @permission_classes([IsAuthenticated])
-# def edit_event(request):
-#     event_id = request.data.get("id")
-#     updates = request.data.get("update", {})
-
-#     e = update_event(request.user, event_id, updates)
-#     if not e:
-#         return Response({"error": "Event not found"}, status=404)
-
-#     return Response({"success": True})
 @api_view(["PUT"])
 @permission_classes([IsAuthenticated])
-def edit_event(request, event_id): # <--- ADD event_id as URL parameter
-    # event_id is now automatically extracted from the URL
-    # event_id = request.data.get("id") # <--- REMOVE THIS LINE
-
+def edit_event(request, event_id):
     updates = request.data.get("update", {})
     
     # Optional: Basic validation for updates data
@@ -86,15 +71,6 @@ def edit_event(request, event_id): # <--- ADD event_id as URL parameter
         return Response({"error": "Event not found or unauthorized"}, status=404)
     
     return Response({"success": True})
-
-# @api_view(["DELETE"])
-# @permission_classes([IsAuthenticated])
-# def remove_event(request):
-#     event_id = request.data.get("id")
-#     ok = delete_event(request.user, event_id)
-#     if not ok:
-#         return Response({"error": "Event not found"}, status=404)
-#     return Response({"success": True})
 
 @api_view(["DELETE"])
 @permission_classes([IsAuthenticated])
