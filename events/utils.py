@@ -188,6 +188,7 @@ def get_event_by_id(event_id):
 
 def delete_event(user, event_id):
     event = get_event_by_id(event_id)
+    print(event)
     if not event or event.user.id != user.id:
         raise ValueError("Event not found or access denied")
     event.delete()

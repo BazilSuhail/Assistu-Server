@@ -71,10 +71,18 @@ def edit_event(request):
     return Response({"success": True})
 
 
-@api_view(["POST"])
+# @api_view(["DELETE"])
+# @permission_classes([IsAuthenticated])
+# def remove_event(request):
+#     event_id = request.data.get("id")
+#     ok = delete_event(request.user, event_id)
+#     if not ok:
+#         return Response({"error": "Event not found"}, status=404)
+#     return Response({"success": True})
+
+@api_view(["DELETE"])
 @permission_classes([IsAuthenticated])
-def remove_event(request):
-    event_id = request.data.get("id")
+def remove_event(request, event_id):  # ID comes from URL, not body
     ok = delete_event(request.user, event_id)
     if not ok:
         return Response({"error": "Event not found"}, status=404)
