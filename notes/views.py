@@ -134,11 +134,12 @@ def delete_note(request, note_id):
 def search_notes(request):
     """
     Search notes using semantic similarity
+    Returns ALL notes with relevance scores (0-100%), sorted by relevance
     
     Request body:
     {
         "query": "search text",
-        "threshold": 0.2  // optional, default 0.2 (20% similarity)
+        "threshold": 0.2  // optional, kept for backward compatibility (not used for filtering)
     }
     """
     user = request.user
@@ -148,15 +149,15 @@ def search_notes(request):
     if not query:
         return Response({'error': 'Query text is required'}, status=400)
     
-    # Validate threshold
+    # Validate threshold (kept for backward compatibility)
     if not 0 <= threshold <= 1:
         return Response({'error': 'Threshold must be between 0 and 1'}, status=400)
     
+    # Get all notes with relevance scores
     results = search_similar_notes(user, query, threshold)
         
     return Response({
             'query': query,
-            'threshold': threshold,
             'count': len(results),
             'results': [{
                 'id': str(result['note'].id),
@@ -164,7 +165,7 @@ def search_notes(request):
                 'subject': result['note'].subject,
                 'summary': result['note'].summary,
                 'importance': result['note'].importance,
-                'similarity': result['similarity'],
+                'relevance_score': round(result['similarity'], 2),  # 0-100% relevance score
                 'created_at': result['note'].created_at,
                 'keywords': result['note'].keywords,
                 'tags': result['note'].tags

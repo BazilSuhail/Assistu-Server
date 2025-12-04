@@ -13,7 +13,7 @@ urlpatterns = [
     
     # Get all tasks for logged-in user
     path('user/', views.user_tasks_view, name='user_tasks'),
-    path('dashboard/', views.user_tasks_view, name='user_tasks'),
+    path('dashboard/', views.dashboard, name='dashboard'),
     
     # Get single task by ID
     path('<str:task_id>/', views.task_detail_view, name='task_detail'),

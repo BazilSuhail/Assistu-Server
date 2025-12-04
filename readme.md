@@ -2,6 +2,9 @@
 
 **Assistu** is an intelligent voice-enabled student assistant server built with Django and MongoDB. This is the backend API server that powers the Assistu application, providing RESTful endpoints for task management, note-taking, event scheduling, study planning, and more.
 
+> [!NOTE]
+> Access the web app user manual via this [User Manual](https://github.com/BazilSuhail/Assistu-Client/blob/main/public/AssistU-User-Manual.pdf).
+
 > **Client Repository**: Access the Client `web-application` of this server via [Assistu-Client](https://github.com/BazilSuhail/Assistu-Client)
 
 ---
@@ -45,11 +48,6 @@ Assistu Server is a Django REST Framework-based backend that processes voice com
 - Subject-based planning with customizable duration
 - Session breakdown and scheduling
 - Plan management (create, view, delete)
-
-### Notifications
-- Task and event reminders
-- Priority-based notification system
-- Related entity tracking
 
 ---
 
@@ -151,12 +149,7 @@ assistu_project/
 │   ├── models.py            # StudyPlan model (title, duration, sessions)
 │   ├── views.py             # Plan creation and retrieval
 │   ├── utils.py             # Plan generation logic
-│   └── urls.py              # /api/planner/ routes
-│
-├── notifications/            # Notification system
-│   ├── models.py            # Notification model (reminders, alerts)
-│   ├── views.py             # Notification listing
-│   └── urls.py              # /api/notifications/ routes
+│   └── urls.py              # /api/planner/ route
 │
 ├── all-MiniLM-L6-v2/        # Pre-trained embedding model files
 │
@@ -201,9 +194,6 @@ assistu_project/
 - `GET /api/planner/<plan_id>/` - Get plan details
 - `DELETE /api/planner/delete/<plan_id>` - Delete plan
 
-### Notifications (`/api/notifications/`)
-- `GET /api/notifications/` - List user notifications
-
 ---
 
 ## Configuration
@@ -240,8 +230,7 @@ MongoDB collections used by the application:
 - `tasks` - Task entries
 - `notes` - Note documents
 - `events` - Calendar events
-- `study_plans` - Study planning data
-- `notifications` - User notifications
+- `study_plans` - Study planning data 
 
 ---
 

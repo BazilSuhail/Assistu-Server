@@ -24,9 +24,7 @@ INSTALLED_APPS = [
     'users',
     'tasks',
     'events',
-    'notes',
-    'notifications',
-    # 'assistu',
+    'notes', 
 ]
 
 MIDDLEWARE = [

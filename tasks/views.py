@@ -1,11 +1,12 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from notes.models import Note
 from tasks.models import Task
 from events.models import Event
+from planner.models import StudyPlan
 
 from .utils import generate_task_from_llm, delete_task, update_task, get_user_tasks, get_task_by_id
 
@@ -98,65 +99,102 @@ def task_detail_view(request, task_id):
 @permission_classes([IsAuthenticated])
 def dashboard(request):
     user = request.user
-    print(user)
     now = datetime.now()
-
-    # Tasks due today
-    start_day = datetime(now.year, now.month, now.day)
-    end_day = start_day + timedelta(days=1)
-
-    tasks_due_today = Task.objects(
-        user=user.id,
-        due_date__gte=start_day,
-        due_date__lt=end_day
-    ).count()
-
-    # Upcoming events
-    upcoming_events = Event.objects(
-        user=user.id,
-        start_time__gte=now
-    ).count()
-
-    # Study hours tracked
-    # You track study hours through Task.estimated_duration (in minutes)
-    completed_tasks = Task.objects(
-        user=user.id,
-        status="completed"
-    )
-
-    study_minutes = sum(t.estimated_duration for t in completed_tasks)
-    study_hours = round(study_minutes / 60, 2)
-
-    # Notes created
-    notes_count = Note.objects(user=user.id).count()
-
-    # Recent tasks
-    recent_tasks = Task.objects(user=user.id).order_by('-created_at')[:5]
-    recent_tasks_data = [
+    
+    # Calculate next month's date range
+    next_month_end = now + timedelta(days=30)
+    
+    # Get all notes for the user
+    all_notes = Note.objects(user=user.id).order_by('-created_at')
+    notes_count = all_notes.count()
+    
+    notes_data = [
         {
-            "title": t.title,
-            "due_date": t.due_date,
-            "priority": t.priority
-        }
-        for t in recent_tasks
-    ]
-
-    # Recent notes
-    recent_notes = Note.objects(user=user.id).order_by('-created_at')[:5]
-    recent_notes_data = [
-        {
+            "id": str(n.id),
             "title": n.title,
+            "transcript": n.transcript,
+            "summary": n.summary,
+            "explanation": n.explanation,
+            "subject": n.subject,
+            "categories": n.categories,
+            "keywords": n.keywords,
+            "importance": n.importance,
+            "tags": n.tags,
             "created_at": n.created_at,
-            "duration": len(n.transcript.split()) if n.transcript else 0
+            "updated_at": n.updated_at
         }
-        for n in recent_notes
+        for n in all_notes
     ]
-
+    
+    # Get all tasks within the next month
+    tasks_next_month = Task.objects(
+        user=user.id,
+        due_date__gte=now,
+        due_date__lte=next_month_end
+    ).order_by('due_date')
+    
+    tasks_data = [
+        {
+            "id": str(t.id),
+            "title": t.title,
+            "description": t.description,
+            "subject": t.subject,
+            "type": t.type,
+            "priority": t.priority,
+            "status": t.status,
+            "due_date": t.due_date,
+            "estimated_duration": t.estimated_duration,
+            "tags": t.tags,
+            "created_at": t.created_at,
+            "updated_at": t.updated_at,
+            "completed_at": t.completed_at,
+            "original_command": t.original_command
+        }
+        for t in tasks_next_month
+    ]
+    
+    # Get all events within the next month
+    events_next_month = Event.objects(
+        user=user.id,
+        start_time__gte=now,
+        start_time__lte=next_month_end
+    ).order_by('start_time')
+    
+    events_data = [
+        {
+            "id": str(e.id),
+            "title": e.title,
+            "description": e.description,
+            "event_type": e.event_type,
+            "start_time": e.start_time,
+            "end_time": e.end_time,
+            "related_task": str(e.related_task.id) if e.related_task else None,
+            "created_at": e.created_at
+        }
+        for e in events_next_month
+    ]
+    
+    # Get all study plans (event plans) within the next month
+    # Note: StudyPlan doesn't have a date field, so we'll get all plans for the user
+    # If you want to filter by date, you'll need to add a date field to StudyPlan model
+    study_plans = StudyPlan.objects(user=user.id).order_by('-created_at')
+    
+    plans_data = [
+        {
+            "id": str(p.id),
+            "title": p.title,
+            "duration": p.duration,
+            "sessions": p.sessions,
+            "created_at": p.created_at,
+            "updated_at": p.updated_at
+        }
+        for p in study_plans
+    ]
+    
     return Response({
-        "tasks_due_today": tasks_due_today,
-        "upcoming_events": upcoming_events,
-        "study_hours": study_hours,
-        "notes_created": notes_count,
-        "recent_tasks": recent_tasks_data,
-        "recent_notes": recent_notes_data
+        "notes_count": notes_count,
+        "notes": notes_data,
+        "tasks_next_month": tasks_data,
+        "events_next_month": events_data,
+        "study_plans": plans_data
     })

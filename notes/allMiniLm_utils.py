@@ -50,14 +50,15 @@ def calculate_cosine_similarity(embedding1, embedding2):
 def search_similar_notes(user, query_text, similarity_threshold=0.2):
     """
     Search for notes with similar content based on semantic similarity
+    Returns ALL notes with relevance scores scaled to 100%
     
     Args:
         user: User object
         query_text: Search query string
-        similarity_threshold: Minimum similarity score (default 0.2 = 20%)
+        similarity_threshold: Not used anymore (kept for backward compatibility)
     
     Returns:
-        List of notes with similarity scores
+        List of ALL notes with similarity scores (0-100%), sorted by relevance
     """
     from .models import Note
     
@@ -69,9 +70,6 @@ def search_similar_notes(user, query_text, similarity_threshold=0.2):
     
     # Generate query embedding
     query_embedding = embed_texts([query_text])[0] 
-    #print(notes)
-    #print(query_text)
-    #print(query_embedding)
     
     # Collect all summaries and note data
     summaries = []
@@ -88,16 +86,20 @@ def search_similar_notes(user, query_text, similarity_threshold=0.2):
     # Generate embeddings for all summaries
     summary_embeddings = embed_texts(summaries)
     
-    # Calculate similarities and filter results
+    # Calculate similarities for ALL notes and scale to 100%
     results = []
     for i, note in enumerate(note_data):
         similarity = calculate_cosine_similarity(query_embedding, summary_embeddings[i])
         
-        if similarity >= similarity_threshold:
-            results.append({
-                'note': note,
-                'similarity': float(similarity)
-            })
+        # Scale similarity to percentage (0-100%)
+        # Cosine similarity ranges from -1 to 1, but typically 0 to 1 for normalized embeddings
+        # We scale it to 0-100%
+        relevance_score = float(similarity * 100)
+        
+        results.append({
+            'note': note,
+            'similarity': relevance_score  # Now scaled to 0-100%
+        })
     
     # Sort by similarity (highest first)
     results.sort(key=lambda x: x['similarity'], reverse=True)
