@@ -41,6 +41,7 @@ def get_note_by_id(request, note_id):
             'subject': note.subject,
             'categories': note.categories,
             'keywords': note.keywords,
+            'explanation': note.explanation,
             'importance': note.importance,
             'tags': note.tags,
             'created_at': note.created_at,

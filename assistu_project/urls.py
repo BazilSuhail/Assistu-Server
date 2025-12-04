@@ -8,6 +8,7 @@ urlpatterns = [
     path('api/tasks/', include('tasks.urls')),
     path('api/events/', include('events.urls')),
     path('api/notes/', include('notes.urls')),
+    path('api/planner/', include('planner.urls')),
     path('api/notifications/', include('notifications.urls')),
 ]
 # from django.urls import path, include
