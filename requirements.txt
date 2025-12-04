@@ -1,0 +1,25 @@
+# Django and Core Frameworks
+Django
+djangorestframework
+django-cors-headers
+
+# MongoDB Integration
+pymongo
+mongoengine
+
+# Authentication
+djangorestframework-simplejwt
+
+# Configuration and Environment
+python-dotenv
+
+# Machine Learning and Inference (likely for a transformer model)
+onnxruntime
+transformers
+numpy
+
+# PDF Handling
+PyMuPDF
+
+# Development and Server (for running the server with auto-reload)
+uvicorn

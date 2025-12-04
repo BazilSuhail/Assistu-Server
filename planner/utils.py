@@ -1,7 +1,7 @@
 import json
 import requests
 from django.conf import settings
-from .models import StudyPlan # Assuming your StudyPlan model is here
+from .models import StudyPlan
 from bson import ObjectId
 from datetime import datetime
 
