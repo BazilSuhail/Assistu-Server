@@ -1,6 +1,6 @@
 # 1. Virtual Environment (located in root)
 venv/
-all-MiniLM-L6-v2/   
+#all-MiniLM-L6-v2/   
 # 2. Nested Model Folder (relative path from root)
 /assistu_project/all-MiniLM-L6-v2/
 

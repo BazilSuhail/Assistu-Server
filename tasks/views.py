@@ -20,7 +20,7 @@ def create_task(request):
     try: 
         task = generate_task_from_llm(user, task_description)
         task.save()
-        return Response({"message": "Task created", "id": str(task.id)})
+        return Response({"message": "Task created with title", "id": str(task.id), "title": str(task.title)})
     except Exception as e:
         return Response({"error": str(e)}, status=400)
 
